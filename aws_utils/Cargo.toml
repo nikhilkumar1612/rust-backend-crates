@@ -1,0 +1,12 @@
+[package]
+name = "aws_utils"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aws-config = "1.8.11"
+aws-sdk-secretsmanager = "1.91.0"
+tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros"] }
+
+[lib]
+path = "src/lib.rs"

@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 tokio = { version = "1.47.1", features = ["full"] }
 cron = { path = "cron" }
+aws_utils = { path = "aws_utils" }
