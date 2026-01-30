@@ -1,4 +1,8 @@
+mod handlers;
+
 use cron::run_every;
+use actix_web::{App, HttpServer};
+use handlers::health::health;
 
 fn future(user: Option<(&str, )>) {
     if user.is_some() {
@@ -7,7 +11,7 @@ fn future(user: Option<(&str, )>) {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> std::io::Result<()> {
     // fire and forget.
     let _result = tokio::task::spawn_blocking(
         || {
@@ -21,7 +25,10 @@ async fn main() {
         }
     );
 
-    // continue with rest of the app/server
-    println!("continue");
-    return;
+     let server = HttpServer::new(move || {
+         App::new().service(health)
+     })
+         .bind(("127.0.0.1", 8080));
+    println!("Server listening on http://localhost:8080");
+    server?.run().await
 }

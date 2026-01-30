@@ -7,3 +7,4 @@ edition = "2024"
 tokio = { version = "1.47.1", features = ["full"] }
 cron = { path = "cron" }
 aws_utils = { path = "aws_utils" }
+actix-web = "4.12.1"
