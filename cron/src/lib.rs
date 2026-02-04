@@ -1,7 +1,7 @@
 use tokio::time::{sleep, Duration};
 
 
-pub async fn run_every<F, Args>(
+pub async fn run_every<F, Fut, Args>(
     interval: u64,
     mut callback: F,
     args: Option<Args>,
@@ -9,7 +9,8 @@ pub async fn run_every<F, Args>(
 )
 where
     Args: Clone,
-    F: FnMut(Option<Args>) + Send + 'static
+    F: FnMut(Option<Args>) -> Fut + Send + 'static,
+    Fut: Future<Output = ()> + Send + 'static
 {
     let f = initial_run.unwrap_or(false);
     let duration = Duration::from_millis(interval);
@@ -17,19 +18,20 @@ where
     if f {
         loop {
             if args.is_some() {
-                callback(args.clone());
+                callback(args.clone()).await;
+            } else {
+                callback(None).await;
             }
-            callback(None);
             sleep(duration).await;
         }
     } else {
         loop {
             sleep(duration).await;
             if args.is_some() {
-                callback(args.clone());
+                callback(args.clone()).await;
+            } else {
+                callback(None).await;
             }
-            callback(None);
-            sleep(duration).await;
         }
     }
 }

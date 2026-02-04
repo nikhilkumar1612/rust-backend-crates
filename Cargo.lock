@@ -1890,6 +1890,9 @@ dependencies = [
  "aws_utils",
  "cron",
  "http_utils",
+ "reqwest",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
