@@ -14,17 +14,17 @@ async fn future(user: Option<(&str, )>) {
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     // fire and forget.
-    // let _result = tokio::task::spawn_blocking(
-    //     || {
-    //         let runtime = tokio::runtime::Runtime::new().expect("Failed to create runtime");
-    //         runtime.block_on(run_every(
-    //             1000, // number of ms
-    //             future, // fn which will run for every `interval`
-    //             Some(("nikhil",)),
-    //             None
-    //         ))
-    //     }
-    // );
+    let _result = tokio::task::spawn_blocking(
+        || {
+            let runtime = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+            runtime.block_on(run_every(
+                1000, // number of ms
+                future, // fn which will run for every `interval`
+                Some(("nikhil",)),
+                None
+            ))
+        }
+    );
 
     let server = HttpServer::new(move || {
         App::new()
