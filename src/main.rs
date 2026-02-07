@@ -4,6 +4,7 @@ use cron::run_every;
 use actix_web::{App, HttpServer};
 use handlers::health::health;
 use handlers::health::redirect;
+// use aws_utils::AwsUtils;
 
 async fn future(user: Option<(&str, )>) {
     if user.is_some() {
@@ -25,6 +26,8 @@ async fn main() -> std::io::Result<()> {
             ))
         }
     );
+
+    // let _aws_utils = AwsUtils::init("".to_string()).await;
 
     let server = HttpServer::new(move || {
         App::new()
