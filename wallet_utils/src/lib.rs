@@ -1,7 +1,7 @@
 use ethers::{
     providers::{Http, Middleware, Provider},
-    signers::{LocalWallet},
-    types::{Address, TransactionRequest, U256, H256}
+    signers::{LocalWallet, Signer},
+    types::{Address, TransactionRequest, U256}
 };
 use std::{sync::Arc};
 
@@ -11,17 +11,18 @@ pub async fn send_transaction(
     to: Address,
     value: U256,
     data: Option<Vec<u8>>
-) -> Result<H256, Box<dyn std::error::Error>> {
+) -> Result<String, Box<dyn std::error::Error>> {
     // provider
     let provider = Provider::<Http>::try_from(rpc_url).unwrap();
 
     // walet
     let wallet: LocalWallet = private_key.parse().unwrap();
+    let wallet = wallet.with_chain_id(11155111u64);
 
     let client = Arc::new(
         ethers::middleware::SignerMiddleware::new(
             provider,
-            wallet
+            wallet,
         )
     );
 
@@ -31,10 +32,7 @@ pub async fn send_transaction(
     }
 
     let pending = client.send_transaction(tx, None).await?;
+    let hash = format!("{:#x}", pending.tx_hash());
 
-    let receipt = pending.await?;
-
-    let receipt = receipt.ok_or_else(|| anyhow::anyhow!("tx dropped"))?;
-
-    Ok(receipt.transaction_hash)
+    Ok(hash)
 }

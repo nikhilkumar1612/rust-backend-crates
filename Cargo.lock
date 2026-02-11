@@ -3836,6 +3836,7 @@ dependencies = [
  "actix-web",
  "aws_utils",
  "cron",
+ "ethers",
  "http_utils",
  "reqwest 0.13.1",
  "serde",

@@ -3,7 +3,7 @@ mod handlers;
 use cron::run_every;
 use actix_web::{App, HttpServer};
 use handlers::health::health;
-use handlers::health::redirect;
+use handlers::redirect::{redirect, send_tx};
 // use aws_utils::AwsUtils;
 
 async fn future(user: Option<(&str, )>) {
@@ -15,17 +15,17 @@ async fn future(user: Option<(&str, )>) {
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     // fire and forget.
-    let _result = tokio::task::spawn_blocking(
-        || {
-            let runtime = tokio::runtime::Runtime::new().expect("Failed to create runtime");
-            runtime.block_on(run_every(
-                1000, // number of ms
-                future, // fn which will run for every `interval`
-                Some(("nikhil",)),
-                None
-            ))
-        }
-    );
+    // let _result = tokio::task::spawn_blocking(
+    //     || {
+    //         let runtime = tokio::runtime::Runtime::new().expect("Failed to create runtime");
+    //         runtime.block_on(run_every(
+    //             1000, // number of ms
+    //             future, // fn which will run for every `interval`
+    //             Some(("nikhil",)),
+    //             None
+    //         ))
+    //     }
+    // );
 
     // let _aws_utils = AwsUtils::init("".to_string()).await;
 
@@ -33,6 +33,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(health)
             .service(redirect)
+            .service(send_tx)
 
     })
          .bind(("127.0.0.1", 8080));
